@@ -22,6 +22,11 @@ const locationSchema = new Schema({
     enum: ["Wildlife", "Adventure"],
     default: "Adventure",
   },
+  tourCount: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 });
 
 const LocationModel = mongoose.model("Location", locationSchema);
