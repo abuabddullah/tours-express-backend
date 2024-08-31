@@ -8,6 +8,6 @@ dotenv.config({ path: "config/config.env" });
 connectDatabase();
 
 app.listen(process.env.PORT, () => {
-  // console.log(`Server is working on http://localhost:${process.env.PORT}`);
-  console.log(`Server is working on http://localhost:5000`);
+  console.log(`Server is working on http://localhost:${process.env.PORT}`);
+  // console.log(`Server is working on http://localhost:5000`);
 });
