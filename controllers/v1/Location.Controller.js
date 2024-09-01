@@ -1,3 +1,5 @@
+const path = require("path");
+const fs = require("fs");
 const catchAsyncErrorsMiddleware = require("../../middleware/catchAsyncErrorsMiddleware");
 const LocationModel = require("../../models/v1/Location.Model");
 
@@ -37,42 +39,57 @@ exports.postLocation = catchAsyncErrorsMiddleware(async (req, res) => {
   }
 });
 
+const deletFileFromUploadsFolder = (fullPath) => {
+  // Check if the file exists
+  if (fs.existsSync(fullPath)) {
+    console.log("Image file found, deleting...");
+    fs.unlinkSync(fullPath);
+    console.log("Image file deleted");
+    return { status: 200 };
+  } else {
+    console.log("Image file not found.");
+    return { status: 404 };
+  }
+};
+
 exports.deleteLocation = async (req, res) => {
   try {
     const { id } = req.params;
-    const { imgUrlPath } = req.body;
 
     // Validate inputs
-    if (!id || !imgUrlPath) {
-      return res.status(400).send('Location ID and image URL path are required.');
+    if (!id) {
+      return res.status(400).send("Location ID is required.");
     }
 
     // Find the location by ID
-    const location = await Location.findById(id);
+    const location = await LocationModel.findById(id);
     if (!location) {
-      return res.status(404).send('Location not found.');
+      return res.status(404).send("Location not found.");
     }
 
     // Delete the location from the database
-    await Location.findByIdAndDelete(id);
+    await LocationModel.findByIdAndDelete(id);
 
-    // Remove the image file from the uploads directory
-    if (imgUrlPath.startsWith('image:uploads/')) {
-      const filePath = imgUrlPath.replace('image:', '');
-      const fullPath = path.resolve(filePath);
-
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
-      } else {
-        return res.status(404).send('Image file not found.');
-      }
-    } else {
-      return res.status(400).send('Invalid image URL path.');
+    //  steps to delete img from "/uploads" folder
+    // Construct the full path of the image file
+    const imagePath = location.image;
+    if (!imagePath) {
+      return res.status(400).send("Image path is not available.");
     }
 
-    res.send('Location and image deleted successfully.');
+    // const uploadsDir = path.resolve('tours-express-backend', 'uploads');
+    const fullPath = path.resolve(imagePath);
+
+    const { status } = deletFileFromUploadsFolder(fullPath);
+
+    if (status == 200) {
+      console.log(status)
+      res.status(200).send("Image file not found. But location deleted");
+    } else if (status == 404) {
+      res.status(404).send("Image file not found. But location deleted");
+    }
   } catch (error) {
-    console.error('Error deleting location:', error);
-    res.status(500).send('Internal server error.');
+    console.error("Error deleting location:", error);
+    res.status(500).send("Internal server error.");
   }
 };
