@@ -39,6 +39,7 @@ exports.postLocation = catchAsyncErrorsMiddleware(async (req, res) => {
   }
 });
 
+// fn for delete file from "uploads" folder
 const deletFileFromUploadsFolder = (fullPath) => {
   // Check if the file exists
   if (fs.existsSync(fullPath)) {
@@ -83,7 +84,7 @@ exports.deleteLocation = async (req, res) => {
     const { status } = deletFileFromUploadsFolder(fullPath);
 
     if (status == 200) {
-      console.log(status)
+      console.log(status);
       res.status(200).send("Image file not found. But location deleted");
     } else if (status == 404) {
       res.status(404).send("Image file not found. But location deleted");
@@ -93,3 +94,64 @@ exports.deleteLocation = async (req, res) => {
     res.status(500).send("Internal server error.");
   }
 };
+
+exports.getLocationById = async (req, res) => {
+  const { id } = req.params;
+  // Validate inputs
+  if (!id) {
+    return res.status(400).send("Location ID is required.");
+  }
+
+  // Find the location by ID
+  const location = await LocationModel.findById(id);
+  console.log("getLocationById",id)
+  console.log("location",location)
+  if (!location) {
+    return res.status(404).send("Location not found.");
+  }
+
+  res.status(200).json({
+    success: true,
+    location,
+  });
+};
+
+
+
+exports.updateLocation = catchAsyncErrorsMiddleware(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const location = await LocationModel.findById(id);
+    console.log(location)
+    if (!location) {
+      return res.status(404).json({ success: false, message: "Location not found" });
+    }
+
+    const updatedData = {
+      name: req.body.name || location.name,
+      description: req.body.description || location.description,
+      category: req.body.category || location.category,
+      tourCount: req.body.tourCount || location.tourCount,
+    };
+
+    if (req.file) {
+      // Delete old image if it exists
+      const oldImagePath = path.resolve(location.image);
+      const { status } = deletFileFromUploadsFolder(oldImagePath);
+      if (status === 200) {
+        console.log("Old image deleted");
+      }
+      
+      // Update with new image
+      updatedData.image = req.file.path;
+    } else {
+      // Keep old image if no new file is uploaded
+      updatedData.image = location.image;
+    }
+
+    const updatedLocation = await LocationModel.findByIdAndUpdate(id, updatedData, { new: true });
+    res.status(200).json({ success: true, location: updatedLocation });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error updating location" });
+  }
+});
