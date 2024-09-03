@@ -12,11 +12,13 @@ app.use("/uploads",express.static("uploads")) // এটা দিয়ে আম�
 const locationRouter = require("./routes/v1/Location.Routes");
 const tourRouter = require("./routes/v1/Tour.Routes");
 const blogRouter = require("./routes/v1/Blog.Routes");
+const userRouter = require("./routes/v1/User.Routes");
 
 //invoking routes
 app.use("/api/v1", locationRouter);
 app.use("/api/v1", tourRouter);
 app.use("/api/v1", blogRouter);
+app.use("/api/v1", userRouter);
 
 // Not found route
 app.all("/", (req, res) => {
