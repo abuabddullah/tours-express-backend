@@ -18,64 +18,34 @@ exports.getBlogs = catchAsyncErrorsMiddleware(async (req, res, next) => {
   }
 });
 
-// test Route are ok to work or not
-// exports.postBlog = catchAsyncErrorsMiddleware(async (req, res, next) => {
-//   const blog = req.body;
-//   console.log(blog);
-
-//   // Create new blog entry
-//   const newBlog = new BlogModel({
-//     blog,
-//   });
-
-//   // Save to database
-//   await newBlog.save();
-
-//   res.status(201).json({
-//     success: true,
-//     blog: newBlog,
-//   });
-// });
-
-
 exports.postBlog = catchAsyncErrorsMiddleware(async (req, res) => {
   try {
-    // Destructure required fields from request body
-    const { writer, category, title, descriptions, image, tags, comments } =
-      req.body;
-
-    // Validate required fields
-    if (!writer || !title || !descriptions || !tags) {
-      return res.status(400).json({
-        success: false,
-        message: "Writer, title, description, and tags are required fields.",
-      });
-    }
-
-    // Create new blog entry
-    const newBlog = new BlogModel({
-      writer,
+    const { title, content, category, tags } = req.body;
+    const writer = req.user.name || req.user.email;
+    console.log({
+      writer, // Replace this with actual user data
+      date: new Date(),
       category,
-      title,
-      descriptions,
-      image,
-      tags,
-      comments: comments || [], // Default to empty array if not provided
+      title: title,
+      descriptions: content,
+      tags: JSON.parse(tags),
+      imagePath: req.file ? req.file.path : null,
+    })
+    const newBlog = new BlogModel({
+      writer, // Replace this with actual user data
+      date: new Date(),
+      category,
+      title: title,
+      descriptions: content,
+      tags: JSON.parse(tags),
+      imagePath: req.file ? req.file.path : null,
     });
-
-    // Save to database
     await newBlog.save();
-
-    // Respond with success
     res.status(201).json({
       success: true,
       blog: newBlog,
     });
   } catch (error) {
-    console.error("Error creating blog:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error creating blog",
-    });
+    res.status(500).json({ error: "Error creating blog" });
   }
 });
