@@ -5,7 +5,7 @@ const userSchema = new Schema(
   {
     username: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
       trim: true,
       minlength: 3,
@@ -14,22 +14,18 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      match: [/.+\@.+\..+/, "Please fill a valid email address"],
+      // match: [/.+\@.+\..+/, "Please fill a valid email address"],
     },
-    uid: {
+    firebaseUID: {
       type: String,
       required: false,
     },
     phone: {
       type: String,
-      match: [/^\d{10}$/, "Please fill a valid phone number"],
+      // match: [/^\d{10}$/, "Please fill a valid phone number"],
     },
     image: {
       type: String, // URL to the photo stored in Firebase Storage
-    },
-    password: {
-      type: String,
-      required: false,
     },
     bookingsByUser: [
       {
@@ -51,7 +47,7 @@ const userSchema = new Schema(
     ],
     role: {
       type: String,
-      required: [true, "role is required"],
+      required: [false, "role is required"],
       enum: ["user", "admin"],
       default: "user",
     },
