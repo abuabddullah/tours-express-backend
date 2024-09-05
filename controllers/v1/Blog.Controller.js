@@ -1,5 +1,6 @@
 const catchAsyncErrorsMiddleware = require("../../middleware/catchAsyncErrorsMiddleware");
 const BlogModel = require("../../models/v1/Blog.model");
+const { deletFileFromUploadsFolder } = require("./Location.Controller");
 
 // test Route are ok to work or not
 exports.getBlogs = catchAsyncErrorsMiddleware(async (req, res, next) => {
@@ -30,7 +31,7 @@ exports.postBlog = catchAsyncErrorsMiddleware(async (req, res) => {
       descriptions: content,
       tags: JSON.parse(tags),
       imagePath: req.file ? req.file.path : null,
-    })
+    });
     const newBlog = new BlogModel({
       writer, // Replace this with actual user data
       date: new Date(),
@@ -49,3 +50,29 @@ exports.postBlog = catchAsyncErrorsMiddleware(async (req, res) => {
     res.status(500).json({ error: "Error creating blog" });
   }
 });
+
+exports.deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("delete blog by id", id);
+
+    // Validate inputs
+    if (!id) {
+      return res.status(400).send("Blog ID is required.");
+    }
+
+    // Find the Blog by ID
+    const blog = await BlogModel.findById(id);
+    if (!blog) {
+      return res.status(404).send("Blog not found.");
+    }
+
+    // Delete the Blog from the database
+    await BlogModel.findByIdAndDelete(id);
+
+    res.status(200).send("Blog deleted");
+  } catch (error) {
+    console.error("Error deleting Blog:", error);
+    res.status(500).send("Internal server error.");
+  }
+};

@@ -1,11 +1,12 @@
 const express = require("express");
-const { getBlogs, postBlog } = require("../../controllers/v1/Blog.Controller");
+const { getBlogs, postBlog, deleteBlog } = require("../../controllers/v1/Blog.Controller");
 const upload = require("../../middleware/multer.middleware");
-const { verifyToken } = require("../../middleware/jwt.middleware");
+const { verifyToken, verifyUserRole } = require("../../middleware/jwt.middleware");
 
 const router = express.Router();
 
 router.route("/blogs").get(getBlogs)
-router.route("/blogs").post(verifyToken,upload.single("image"),postBlog);
+router.route("/blogs").post(verifyToken,verifyUserRole("blogger"),upload.single("image"),postBlog);
+router.route("/blogs/:id").delete(deleteBlog)
 
 module.exports = router;

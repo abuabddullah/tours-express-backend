@@ -1,12 +1,9 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-
-
 // Define Blog Schema
 const BlogSchema = new Schema({
-  writer: { type: String, required: false,
-    default: "Anonymous", },
+  writer: { type: String, required: false, default: "Anonymous" },
   date: { type: Date, default: Date.now }, // Default to current date if not provided
   category: {
     type: String,
@@ -36,6 +33,12 @@ const BlogSchema = new Schema({
     {
       email: String,
       cmntText: String,
+    },
+  ],
+  ratings: [
+    {
+      email: String,
+      rate: Number,
     },
   ],
 });

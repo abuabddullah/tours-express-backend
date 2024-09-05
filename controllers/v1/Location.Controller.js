@@ -40,7 +40,7 @@ exports.postLocation = catchAsyncErrorsMiddleware(async (req, res) => {
 });
 
 // fn for delete file from "uploads" folder
-const deletFileFromUploadsFolder = (fullPath) => {
+exports.deletFileFromUploadsFolder = (fullPath) => {
   // Check if the file exists
   if (fs.existsSync(fullPath)) {
     console.log("Image file found, deleting...");
