@@ -6,7 +6,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/uploads",express.static("uploads")) // এটা দিয়ে আমরা বলে দিচ্ছি যে, "যদি ইউজার uploads ফোল্ডারের কোন ফাইলকে `${baseurl}/uploads/${filename.ext}` এর মাধ্যমে পেতে চায় তাহলে তাকে পেতে দিতে হবে"
+app.use("/uploads", express.static("uploads")); // এটা দিয়ে আমরা বলে দিচ্ছি যে, "যদি ইউজার uploads ফোল্ডারের কোন ফাইলকে `${baseurl}/uploads/${filename.ext}` এর মাধ্যমে পেতে চায় তাহলে তাকে পেতে দিতে হবে"
 
 //Route imports
 const locationRouter = require("./routes/v1/Location.Routes");
