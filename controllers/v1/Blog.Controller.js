@@ -1,6 +1,5 @@
 const catchAsyncErrorsMiddleware = require("../../middleware/catchAsyncErrorsMiddleware");
 const BlogModel = require("../../models/v1/Blog.model");
-const { deletFileFromUploadsFolder } = require("./Location.Controller");
 
 // test Route are ok to work or not
 exports.getBlogs = catchAsyncErrorsMiddleware(async (req, res, next) => {
@@ -23,16 +22,6 @@ exports.postBlog = catchAsyncErrorsMiddleware(async (req, res) => {
   try {
     const { title, content, category, tags } = req.body;
     const writer = req.user.name || req.user.email;
-    // const newBlog = new BlogModel({
-    //   writer,
-    //   date: new Date(),
-    //   category,
-    //   title: title,
-    //   descriptions: content,
-    //   tags: JSON.parse(tags),
-    //   imagePath: req.file ? req.file.path : null,
-    // });
-    // await newBlog.save();
     const newBlog = await BlogModel.create({
       writer,
       date: new Date(),

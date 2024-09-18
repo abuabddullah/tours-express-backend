@@ -35,10 +35,12 @@ const tourSchema = new Schema({
     type: Number,
     min: 0,
     max: 5,
+    default: 0,
   },
   cost: {
     type: Number,
     required: true,
+    default: 0,
   },
   reviews: [],
 });

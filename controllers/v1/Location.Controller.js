@@ -1,7 +1,7 @@
 const path = require("path");
-const fs = require("fs");
 const catchAsyncErrorsMiddleware = require("../../middleware/catchAsyncErrorsMiddleware");
 const LocationModel = require("../../models/v1/Location.Model");
+const deletFileFromUploadsFolder = require("../../middleware/fileHandler.middleware");
 
 // test Route are ok to work or not
 exports.getLocations = catchAsyncErrorsMiddleware(async (req, res, next) => {
@@ -39,20 +39,6 @@ exports.postLocation = catchAsyncErrorsMiddleware(async (req, res) => {
   }
 });
 
-// fn for delete file from "uploads" folder
-exports.deletFileFromUploadsFolder = (fullPath) => {
-  // Check if the file exists
-  if (fs.existsSync(fullPath)) {
-    console.log("Image file found, deleting...");
-    fs.unlinkSync(fullPath);
-    console.log("Image file deleted");
-    return { status: 200 };
-  } else {
-    console.log("Image file not found.");
-    return { status: 404 };
-  }
-};
-
 exports.deleteLocation = async (req, res) => {
   try {
     const { id } = req.params;
@@ -74,12 +60,13 @@ exports.deleteLocation = async (req, res) => {
     //  steps to delete img from "/uploads" folder
     // Construct the full path of the image file
     const imagePath = location.image;
+    console.log("imagePath", imagePath);
     if (!imagePath) {
       return res.status(400).send("Image path is not available.");
     }
 
-    // const uploadsDir = path.resolve('tours-express-backend', 'uploads');
     const fullPath = path.resolve(imagePath);
+    console.log("fullPath", fullPath);
 
     const { status } = deletFileFromUploadsFolder(fullPath);
 
@@ -104,8 +91,8 @@ exports.getLocationById = async (req, res) => {
 
   // Find the location by ID
   const location = await LocationModel.findById(id);
-  console.log("getLocationById",id)
-  console.log("location",location)
+  console.log("getLocationById", id);
+  console.log("location", location);
   if (!location) {
     return res.status(404).send("Location not found.");
   }
@@ -116,15 +103,15 @@ exports.getLocationById = async (req, res) => {
   });
 };
 
-
-
 exports.updateLocation = catchAsyncErrorsMiddleware(async (req, res) => {
   try {
     const { id } = req.params;
     const location = await LocationModel.findById(id);
-    console.log(location)
+    console.log(location);
     if (!location) {
-      return res.status(404).json({ success: false, message: "Location not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Location not found" });
     }
 
     const updatedData = {
@@ -141,7 +128,7 @@ exports.updateLocation = catchAsyncErrorsMiddleware(async (req, res) => {
       if (status === 200) {
         console.log("Old image deleted");
       }
-      
+
       // Update with new image
       updatedData.image = req.file.path;
     } else {
@@ -149,9 +136,15 @@ exports.updateLocation = catchAsyncErrorsMiddleware(async (req, res) => {
       updatedData.image = location.image;
     }
 
-    const updatedLocation = await LocationModel.findByIdAndUpdate(id, updatedData, { new: true });
+    const updatedLocation = await LocationModel.findByIdAndUpdate(
+      id,
+      updatedData,
+      { new: true }
+    );
     res.status(200).json({ success: true, location: updatedLocation });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error updating location" });
+    res
+      .status(500)
+      .json({ success: false, message: "Error updating location" });
   }
 });
