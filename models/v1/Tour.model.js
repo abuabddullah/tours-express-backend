@@ -23,7 +23,7 @@ const tourSchema = new Schema({
   category: {
     type: String,
     required: [true, "Category is required"],
-    enum: ["Wildlife", "Adventure"],
+    enum: ["adventure", "honeymoon", "international", "popular"],
     default: "Adventure",
   },
   tourCount: {

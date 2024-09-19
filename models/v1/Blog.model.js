@@ -7,15 +7,15 @@ const BlogSchema = new Schema({
   date: { type: Date, default: Date.now }, // Default to current date if not provided
   category: {
     type: String,
-    // enum: [
-    //   "Adventure",
-    //   "Beach",
-    //   "Culture",
-    //   "Historical",
-    //   "Nature",
-    //   "Wildlife",
-    //   "Uncategorized",
-    // ],
+    enum: [
+      "Adventure",
+      "Beach",
+      "Culture",
+      "Historical",
+      "Nature",
+      "Wildlife",
+      "Uncategorized",
+    ],
     default: "Uncategorized",
   },
   title: {
@@ -24,6 +24,7 @@ const BlogSchema = new Schema({
     minlength: [5, "Title must be at least 5 characters long"],
   },
   descriptions: { type: String, required: false },
+  seoDescriptions: { type: String, required: false },
   imagePath: { type: String },
   tags: {
     type: [String],

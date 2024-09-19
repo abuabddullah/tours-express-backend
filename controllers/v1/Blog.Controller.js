@@ -20,7 +20,7 @@ exports.getBlogs = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
 exports.postBlog = catchAsyncErrorsMiddleware(async (req, res) => {
   try {
-    const { title, content, category, tags } = req.body;
+    const { title, content, category, tags, seoDescriptions } = req.body;
     const writer = req.user.name || req.user.email;
     const newBlog = await BlogModel.create({
       writer,
@@ -28,6 +28,7 @@ exports.postBlog = catchAsyncErrorsMiddleware(async (req, res) => {
       category,
       title: title,
       descriptions: content,
+      seoDescriptions,
       tags: JSON.parse(tags),
       imagePath: req.file ? req.file.path : null,
     });
@@ -73,11 +74,6 @@ exports.getBlogDetailsById = async (req, res) => {
   try {
     const blogId = req.params.id;
 
-    // Validate the ID (basic validation, consider using a library like express-validator for more robust validation)
-    // if (!blogId.match(/^[0-9a-fA-F]{24}$/)) {
-    //   return res.status(400).json({ message: 'Invalid blog ID' });
-    // }
-
     // Find the blog by ID
     const blog = await BlogModel.findById(blogId);
 
@@ -93,3 +89,38 @@ exports.getBlogDetailsById = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.updateBlog = catchAsyncErrorsMiddleware(async (req, res) => {
+  console.log(req.body);
+  const { id } = req.params;
+  const { title, content, category, tags, seoDescriptions } = req.body;
+
+  try {
+    const updatedBlog = await BlogModel.findByIdAndUpdate(
+      id,
+      {
+        title,
+        descriptions: content,
+        category,
+        seoDescriptions,
+        tags: JSON.parse(tags),
+        imagePath: req.file ? req.file.path : undefined,
+      },
+      { new: true }
+    );
+
+    if (!updatedBlog) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      blog: updatedBlog,
+    });
+  } catch (error) {
+    console.error("Error updating blog:", error);
+    res.status(500).json({ success: false, message: "Error updating blog" });
+  }
+});

@@ -4,6 +4,7 @@ const {
   postBlog,
   deleteBlog,
   getBlogDetailsById,
+  updateBlog,
 } = require("../../controllers/v1/Blog.Controller");
 const upload = require("../../middleware/multer.middleware");
 const {
@@ -22,6 +23,10 @@ router
     upload.single("image"),
     postBlog
   );
-router.route("/blogs/:id").delete(deleteBlog).get(getBlogDetailsById);
+router
+  .route("/blogs/:id")
+  .delete(deleteBlog)
+  .get(getBlogDetailsById)
+  .put(upload.single("image"), updateBlog);
 
 module.exports = router;
