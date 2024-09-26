@@ -14,6 +14,7 @@ const tourRouter = require("./routes/v1/Tour.Routes");
 const blogRouter = require("./routes/v1/Blog.Routes");
 const userRouter = require("./routes/v1/User.Routes");
 const metaTagRouter = require("./routes/v1/MetaTag.Routes");
+const bookingRouter = require("./routes/v1/Booking.Routes");
 
 //invoking routes
 app.use("/api/v1", locationRouter);
@@ -21,6 +22,7 @@ app.use("/api/v1", tourRouter);
 app.use("/api/v1", blogRouter);
 app.use("/api/v1", userRouter);
 app.use("/api/v1", metaTagRouter);
+app.use("/api/v1", bookingRouter);
 
 // Not found route
 app.all("/", (req, res) => {
