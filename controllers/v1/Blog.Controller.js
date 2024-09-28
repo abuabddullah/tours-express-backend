@@ -124,3 +124,27 @@ exports.updateBlog = catchAsyncErrorsMiddleware(async (req, res) => {
     res.status(500).json({ success: false, message: "Error updating blog" });
   }
 });
+
+// get blogs by category
+exports.getBlogsByCategory = async (req, res) => {
+  try {
+    const category = req.params.category;
+    const blogs = await BlogModel.find({ category });
+    // add the blog length too
+    res.status(200).json({ length: blogs.length, blogs });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// returns the category names
+exports.getCategoryNames = async (req, res) => {
+  try {
+    const categories = await BlogModel.distinct("category");
+    res.status(200).json({ categories });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

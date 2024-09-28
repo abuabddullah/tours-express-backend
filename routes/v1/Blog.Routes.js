@@ -5,6 +5,8 @@ const {
   deleteBlog,
   getBlogDetailsById,
   updateBlog,
+  getBlogsByCategory,
+  getCategoryNames,
 } = require("../../controllers/v1/Blog.Controller");
 const upload = require("../../middleware/multer.middleware");
 const {
@@ -28,5 +30,10 @@ router
   .delete(deleteBlog)
   .get(getBlogDetailsById)
   .put(upload.single("image"), updateBlog);
+
+//getCategoryNames
+router.route("/blogs/categories/unique").get(getCategoryNames);
+// getBlogsByCategory route
+router.route("/blogs/categories/:category").get(getBlogsByCategory);
 
 module.exports = router;
