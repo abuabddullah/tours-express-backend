@@ -5,6 +5,7 @@ const {
   deleteLocation,
   getLocationById,
   updateLocation,
+  getAllUniqueNames,
 } = require("../../controllers/v1/Location.Controller");
 const upload = require("../../middleware/multer.middleware");
 
@@ -14,6 +15,8 @@ router
   .route("/locations")
   .get(getLocations)
   .post(upload.single("file"), postLocation);
+
+router.route("/locations/unique").get(getAllUniqueNames);
 router
   .route("/locations/:id")
   .delete(deleteLocation)
@@ -21,6 +24,3 @@ router
   .patch(upload.single("file"), updateLocation); // Add PATCH route;
 
 module.exports = router;
-
-
-

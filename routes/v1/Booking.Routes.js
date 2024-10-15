@@ -13,21 +13,31 @@ const {
 const router = express.Router();
 
 // POST route to create a new booking
-router.post("/bookings", verifyToken, bookingValidationRules, createBooking);
+router.post(
+  "/ticket-bookings",
+  verifyToken,
+  bookingValidationRules,
+  createBooking
+);
 
 // GET route to fetch all bookings
-router.get("/bookings", verifyToken, getAllBookings);
+router.get("/ticket-bookings", verifyToken, getAllBookings);
 
 // GET route to fetch a booking by ID
 // router.get('/booking/:id',authMiddleware, getBookingById);
-router.get("/bookings/:id", verifyToken, getBookingById);
+router.get("/ticket-bookings/:id", verifyToken, getBookingById);
 
 // PUT route to update a booking by ID
 // router.put('/booking/:id',authMiddleware, bookingValidationRules, updateBooking);
-router.put("/bookings/:id", verifyToken, bookingValidationRules, updateBooking);
+router.put(
+  "/ticket-bookings/:id",
+  verifyToken,
+  bookingValidationRules,
+  updateBooking
+);
 
 // DELETE route to delete a booking by ID
-router.delete("/bookings/:id", verifyToken, deleteBooking);
+router.delete("/ticket-bookings/:id", verifyToken, deleteBooking);
 
 // Route to get all bookings for the current user
 router.get("/my-bookings", verifyToken, getUserBookings);

@@ -148,3 +148,13 @@ exports.updateLocation = catchAsyncErrorsMiddleware(async (req, res) => {
       .json({ success: false, message: "Error updating location" });
   }
 });
+exports.getAllUniqueNames = async (req, res) => {
+  try {
+    const names = await LocationModel.distinct("name");
+    res.status(200).json({ success: true, names });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error getting unique names" });
+  }
+};
