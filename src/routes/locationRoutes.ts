@@ -1,7 +1,6 @@
 import express from 'express';
 import * as locationController from '../controllers/locationController';
 import { protect, restrictTo } from '../middleware/auth';
-import { uploadMiddleware } from '../middleware/upload';
 
 const router = express.Router();
 

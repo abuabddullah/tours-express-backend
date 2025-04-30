@@ -1,7 +1,6 @@
 import express from 'express';
 import * as blogController from '../controllers/blogController';
 import { protect } from '../middleware/auth';
-import { uploadMiddleware } from '../middleware/upload';
 
 const router = express.Router();
 
