@@ -10,7 +10,7 @@ router.get('/my-bookings', bookingController.getMyBookings);
 router.post('/', bookingController.createBooking);
 
 // Admin routes
-router.use(restrictTo('user'));
+router.use(restrictTo('admin'));
 router.get('/', bookingController.getAllBookings);
 router.get('/:id', bookingController.getBooking);
 router.patch('/:id', bookingController.updateBooking);

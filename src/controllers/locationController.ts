@@ -86,9 +86,11 @@ export const deleteLocation = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
+
     // Check if location is referenced by tours
     const relatedTours = await db('tours').where('location_id', id).first();
     if (relatedTours) {
+
       return next(
         new ErrorHandler('Cannot delete location because it is referenced by tours', 400),
       );
@@ -101,7 +103,7 @@ export const deleteLocation = catchAsync(
     }
 
     // Delete location
-    await db('locations').where('id', id).del();
+    const response = await db('locations').where('id', id).del();
 
     res.status(204).json({
       status: 'success',

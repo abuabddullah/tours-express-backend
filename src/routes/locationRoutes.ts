@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', locationController.getAllLocations);
 router.get('/:id', locationController.getLocation);
 
-router.use(protect, restrictTo('user'));
+router.use(protect, restrictTo('admin'));
 
 router.post('/', locationController.createLocation);
 router.patch('/:id', locationController.updateLocation);

@@ -8,7 +8,7 @@ import app from './app';
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 // Start server
 const server = app.listen(port, () => {
